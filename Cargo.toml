@@ -8,3 +8,7 @@ edition = "2018"
 
 [dependencies]
 rand = "0.7.2"
+rayon = "1.2.0"
+clap = "2.33.0"
+bio = "0.28.2"
+ndarray = { version = "0.13.0", features = ["rayon"] }
