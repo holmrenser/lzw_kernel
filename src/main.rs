@@ -52,7 +52,7 @@ fn main() {
 
     let nj_tree = Tree::from_neighbor_joining(dist, names);
 
-    println!("{:?}", nj_tree);
+    println!("{:?}", nj_tree.to_newick());
     /*
     let d = array![
         [0., 1., 2., 3., 4., 5.],

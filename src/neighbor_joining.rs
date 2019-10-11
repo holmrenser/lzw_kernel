@@ -19,15 +19,15 @@ impl NeighborJoining for Tree<TreeNode> {
         let mut nodes: Vec<Tree<TreeNode>> = names.iter()
             .map(|n| {
                 id += 1;
-                Tree::Node(
-                    TreeNode {
+                Tree::Node {
+                    data: TreeNode {
                         height: 1.0,
                         id: id,
                         name: n.to_string()
                     },
-                    Box::new(Tree::Empty),
-                    Box::new(Tree::Empty)
-                )
+                    left_child: Box::new(Tree::Empty),
+                    right_child: Box::new(Tree::Empty)
+                }
             }).collect();
         loop {
             let q = make_q_mat(&dist);
@@ -37,15 +37,15 @@ impl NeighborJoining for Tree<TreeNode> {
             let node2 = nodes[i2].clone();
             nodes.remove(i2);
             id += 1;
-            nodes[i1] = Tree::Node(
-                TreeNode {
+            nodes[i1] = Tree::Node {
+                data: TreeNode {
                     height: 1.0,
                     id: id,
                     name: id.to_string()
                 },
-                Box::new(node1),
-                Box::new(node2)
-            );
+                left_child: Box::new(node1),
+                right_child: Box::new(node2)
+            };
             dist = make_new_dist(&dist, pair);
             if dist.len() <= 2 { break }
         }

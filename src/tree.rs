@@ -20,7 +20,11 @@ impl TreeNode {
 #[derive(Debug, Clone)]
 pub enum Tree<T> {
     Empty,
-    Node(T, Box<Tree<T>>, Box<Tree<T>>)
+    Node {
+        data: T, 
+        left_child: Box<Tree<T>>, 
+        right_child: Box<Tree<T>>
+    }
 }
 
 impl Tree<TreeNode> {
@@ -30,17 +34,17 @@ impl Tree<TreeNode> {
 
     pub fn from_size(s: usize) -> Tree<TreeNode> {
         return if s > 0 {
-            Tree::Node(
-                TreeNode::from_usize(s),
-                Box::new(Tree::Empty),
-                Box::new(Tree::from_size(s - 1))
-            )
+            Tree::Node {
+                data: TreeNode::from_usize(s),
+                left_child: Box::new(Tree::Empty),
+                right_child: Box::new(Tree::from_size(s - 1))
+            }
         } else {
-            Tree::Node(
-                TreeNode::from_usize(s),
-                Box::new(Tree::Empty),
-                Box::new(Tree::Empty)
-            )
+            Tree::Node {
+                data: TreeNode::from_usize(s),
+                left_child: Box::new(Tree::Empty),
+                right_child: Box::new(Tree::Empty)
+            }
         }
 
     }
@@ -52,18 +56,37 @@ impl Tree<TreeNode> {
 
     fn _dfs(&self, result: &mut Vec<TreeNode>) -> () {
         match self {
-            Tree::Node(val, left_child, right_child) => {
-                result.push(val.clone());
+            Tree::Node { data, left_child, right_child } => {
+                result.push(data.clone());
                 left_child._dfs(result);
                 right_child._dfs(result);
-                println!("{:?}", val);
+                println!("{:?}", data);
             },
             Tree::Empty => { /* Nothing */ }
         }
     }
 
-    fn to_newick(&self) -> String {
-        return "(1,2);".to_string();
+    pub fn to_newick(&self) -> String {
+        match self {
+            Tree::Node { data, left_child, right_child } => {
+                let is_tipnode = match **left_child {
+                    Tree::Node {..} => false,
+                    Tree::Empty => true
+                };
+                return if is_tipnode {
+                    data.name.clone()
+                } else {
+                    format!(
+                        "({},{})", 
+                        left_child.to_newick(), 
+                        right_child.to_newick()
+                    ).to_string()
+                }
+            },
+            Tree::Empty => {
+                return "".to_string()
+            }
+        }
     }
 
 }
