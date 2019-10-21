@@ -6,6 +6,7 @@ use clap::{Arg, App};
 
 // use ndarray::Array2;
 // use ndarray::prelude::*;
+use ndarray_linalg::*;
 
 mod lzw_kernel;
 use crate::lzw_kernel::lzw_kernel;
@@ -44,11 +45,12 @@ fn main() {
         .map(|r| r.id().to_string())
         .collect();
 
-    println!("{:?}", names);
+    // println!("{:?}", names);
 
     let kernel = lzw_kernel(records);
 
-    let dist = 1.0 - kernel;
+    // let dist = 1.0 - kernel;
+    let dist = kernel.inv().unwrap();
 
     let nj_tree = Tree::from_neighbor_joining(dist, names);
 
